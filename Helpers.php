@@ -20,7 +20,7 @@ class Helpers
     ];
 
     public $birthMonth;
-    public $birthDay;
+    public $birthDate;
 
     public function validateMonth()
     {
@@ -32,8 +32,8 @@ class Helpers
     public function validateDay()
     {
         $isValidDay = $this->validateNumOfDays();
-        while (!is_numeric($this->birthDay) || !$isValidDay) {
-            $this->birthDay = readline('Please Enter a valid birthday Day: ');
+        while (!is_numeric($this->birthDate) || !$isValidDay) {
+            $this->birthDate = readline('Please Enter a valid birthday Date: ');
             $isValidDay = $this->validateNumOfDays();
         }
     }
@@ -41,30 +41,33 @@ class Helpers
     protected function validateNumOfDays()
     {
 
-        if (empty(self::numOfDays[$this->birthMonth]) || !is_numeric($this->birthDay)) {
+        if (empty(self::numOfDays[$this->birthMonth]) || !is_numeric($this->birthDate)) {
             return false;
         }
-        if ($this->birthDay <= self::numOfDays[$this->birthMonth]) {
+        if ($this->birthDate <= self::numOfDays[$this->birthMonth]) {
             return true;
         }
         return false;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getRemainingDays()
     {
         $date = new Date();
         $now = $date->get();
         $year = $date->year();
 
-        $currentBirthDay = "$this->birthDay-$this->birthMonth-$year";
+        $currentBirthDay = "$this->birthDate-$this->birthMonth-$year";
 
         $birthDay = $date->get($currentBirthDay);
 
         if ($now->getTimestamp() > $birthDay->getTimestamp()) {
             $nextYear = $year + 1;
-            $nextBirthDay = "$this->birthDay-$this->birthMonth-$nextYear";
+            $nextBirthDay = "$this->birthDate-$this->birthMonth-$nextYear";
             $birthDay = $date->get($nextBirthDay);
         }
-        return $now->diff($birthDay)->days + 1;
+        return $now->diff($birthDay)->days;
     }
 }
